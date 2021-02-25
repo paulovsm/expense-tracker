@@ -20,7 +20,7 @@ provider:
 
   tracing:
     lambda: true
-    #apiGateway: true
+    apiGateway: true
 
   environment:
     TRANSACTIONS_TABLE: Transactions-${self:provider.stage}
@@ -33,19 +33,20 @@ provider:
     restApi: true
 
 functions:
+  $include: src/lambda/auth/auth.yml
 
 
 custom:
   documentation:
-    # api:
-    #   info:
-    #     version: v1.0.0
-    #     title: Todo API
-    #     description: Serverless application for expenses tracking
+    api:
+      info:
+        version: v1.0.0
+        title: Todo API
+        description: Serverless application for expenses tracking
 
 resources:
   Resources:
-    TodosDynamoDBTable:
+    TransactionsDynamoDBTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
@@ -106,3 +107,23 @@ resources:
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
+
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+          gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS,POST'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+
+    RequestBodyValidator:
+      Type: AWS::ApiGateway::RequestValidator
+      Properties:
+        Name: 'request-body-validator'
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        ValidateRequestBody: true
+        ValidateRequestParameters: false

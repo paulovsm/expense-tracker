@@ -18,7 +18,8 @@ deploy_service_job: &DEPLOY_SERVICE_JOB
 
   script:
     - cd ${SERVICE_PATH}
-    - serverless deploy -v
+    - yamlinc my_swagger_doc.yml
+    - serverless deploy -v --config ./path/to/serverless.inc.yml
     - cd -
 
 jobs:
