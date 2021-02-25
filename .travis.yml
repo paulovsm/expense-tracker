@@ -13,7 +13,7 @@ deploy_service_job: &DEPLOY_SERVICE_JOB
     - npm install -g yamlinc
     - travis_retry npm install
     - cd ${SERVICE_PATH}
-    - travis_retry npm install
+    - npm install
     - cd -
 
   script:
