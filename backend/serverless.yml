@@ -33,8 +33,8 @@ provider:
     restApi: true
 
 functions:
-  $include: src/lambda/auth/auth.yml
-
+  Auth:
+    handler: src/lambda/auth/auth0Authorizer.handler
 
 custom:
   documentation:
