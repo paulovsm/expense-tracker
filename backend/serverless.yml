@@ -6,7 +6,6 @@ plugins:
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
   - serverless-iam-roles-per-function
-  - serverless-es-logs
 
 # Uncomment to enable individual packaging
 package:
