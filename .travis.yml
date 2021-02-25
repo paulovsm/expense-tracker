@@ -1,0 +1,29 @@
+language: node_js
+node_js:
+  - "12"
+
+deploy_service_job: &DEPLOY_SERVICE_JOB
+  cache:
+    directories:
+      - node_modules
+      - ${SERVICE_PATH}/node_modules
+
+  install:
+    - npm install -g serverless
+    - npm install -g yamlinc
+    - travis_retry npm install
+    - cd ${SERVICE_PATH}
+    - travis_retry npm install
+    - cd -
+
+  script:
+    - cd ${SERVICE_PATH}
+    - serverless deploy -v
+    - cd -
+
+jobs:
+  include:
+    - <<: *DEPLOY_SERVICE_JOB
+      name: "Deploy Users API"
+      env:
+        - SERVICE_PATH="backend"
