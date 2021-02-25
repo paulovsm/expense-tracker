@@ -37,11 +37,11 @@ functions:
 
 custom:
   documentation:
-    api:
-      info:
-        version: v1.0.0
-        title: Todo API
-        description: Serverless application for expenses tracking
+    # api:
+    #   info:
+    #     version: v1.0.0
+    #     title: Todo API
+    #     description: Serverless application for expenses tracking
 
 resources:
   Resources:
