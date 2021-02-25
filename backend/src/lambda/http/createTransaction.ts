@@ -8,19 +8,18 @@ import * as middy from 'middy'
 import { cors } from 'middy/middlewares'
 import { createLogger } from '../../utils/logger'
 
-const logger = createLogger('createTodo.handler')
+const logger = createLogger('createTransaction.handler')
 
 export const handler = middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const newTodo: CreateTransactionRequest = JSON.parse(event.body)
+  const newTransaction: CreateTransactionRequest = JSON.parse(event.body)
 
-  // TODO: Implement creating a new TODO item
-  logger.info('create to-do', {todoRequest: newTodo} )
-  const todo = await createTransaction(event, newTodo);
+  logger.info('create transaction', {transactionRequest: newTransaction} )
+  const trans = await createTransaction(event, newTransaction);
 
   return {
     statusCode: 201,
     body: JSON.stringify({
-      item: todo
+      item: trans
     })
   };
 })
