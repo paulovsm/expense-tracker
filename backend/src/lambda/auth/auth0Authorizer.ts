@@ -75,39 +75,39 @@ export const handler = async (
   // }
 }
 
-async function verifyToken(authHeader: string): Promise<JwtPayload> {
-  const token = getToken(authHeader)
-  const jwt: Jwt = decode(token, { complete: true }) as Jwt
+// async function verifyToken(authHeader: string): Promise<JwtPayload> {
+//   const token = getToken(authHeader)
+//   const jwt: Jwt = decode(token, { complete: true }) as Jwt
 
-  if(!jwt || !jwt.header) {
-    throw new Error("Invalid jwt header")
-  }
+//   if(!jwt || !jwt.header) {
+//     throw new Error("Invalid jwt header")
+//   }
 
-  let key = await getKey(jwt.header)
-  let publicKey = key.getPublicKey()
+//   let key = await getKey(jwt.header)
+//   let publicKey = key.getPublicKey()
 
-  return verify(token,publicKey) as JwtPayload
-}
+//   return verify(token,publicKey) as JwtPayload
+// }
 
-async function getKey(header: JwtHeader): Promise<jwksClient.SigningKey>{
-  return new Promise((resolve,reject) => {
-    client.getSigningKey(header.kid, function(err: Error, key: jwksClient.SigningKey) {
-        if(err){
-          reject(err)
-        }
-        resolve(key)  
-    });
-  })
-}
+// async function getKey(header: JwtHeader): Promise<jwksClient.SigningKey>{
+//   return new Promise((resolve,reject) => {
+//     client.getSigningKey(header.kid, function(err: Error, key: jwksClient.SigningKey) {
+//         if(err){
+//           reject(err)
+//         }
+//         resolve(key)  
+//     });
+//   })
+// }
 
-function getToken(authHeader: string): string {
-  if (!authHeader) throw new Error('No authentication header')
+// function getToken(authHeader: string): string {
+//   if (!authHeader) throw new Error('No authentication header')
 
-  if (!authHeader.toLowerCase().startsWith('bearer '))
-    throw new Error('Invalid authentication header')
+//   if (!authHeader.toLowerCase().startsWith('bearer '))
+//     throw new Error('Invalid authentication header')
 
-  const split = authHeader.split(' ')
-  const token = split[1]
+//   const split = authHeader.split(' ')
+//   const token = split[1]
 
-  return token
-}
+//   return token
+// }
