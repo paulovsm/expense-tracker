@@ -20,7 +20,7 @@ UpdateTransaction:
           - dynamodb:GetItem
           - dynamodb:DeleteItem
           - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTION_TABLE}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTIONS_TABLE}
       - Effect: Allow
         Action:
           - dynamodb:Query
@@ -28,7 +28,7 @@ UpdateTransaction:
           - dynamodb:GetItem
           - dynamodb:DeleteItem
           - dynamodb:UpdateItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTION_TABLE}/index/${self:provider.environment.USERID_INDEX}
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTIONS_TABLE}/index/${self:provider.environment.USERID_INDEX}
       - Effect: Allow
         Action:
           - s3:PutObject
