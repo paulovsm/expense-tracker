@@ -33,33 +33,8 @@ provider:
     restApi: true
 
 functions:
-  Auth:
-    handler: src/lambda/auth/auth0Authorizer.handler
-
-  CreateTransaction:
-    handler: src/lambda/http/createTransaction.handler
-    events:
-      - http:
-          method: post
-          path: todos
-          cors: true
-          authorizer: Auth
-          reqValidatorName: RequestBodyValidator
-          documentation:
-            summary: Create a new Transaction
-            description: Create a new Transaction
-            requestModels:
-              'application/json': TransactionCreateRequest
-    iamRoleStatements:
-      - Effect: Allow
-        Action:
-          - dynamodb:PutItem
-        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTIONS_TABLE}
-      - Effect: Allow
-        Action:
-          - xray:PutTraceSegments
-          - xray:PutTelemetryRecords
-        Resource: "*"
+  - ${file(src/lambda/http/createTransaction.yml)}
+  - ${file(src/lambda/auth/auth0Authorizer.yml)}
 
 custom:
   documentation:
