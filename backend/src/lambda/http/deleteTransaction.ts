@@ -11,7 +11,6 @@ const logger = createLogger('deleteTransaction.handler')
 export const handler= middy(async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const transactionId = event.pathParameters.transactionId;
 
-  // TODO: Remove a TODO item by id
   const success = await deleteTransaction(event)
 
   if (!success) {
