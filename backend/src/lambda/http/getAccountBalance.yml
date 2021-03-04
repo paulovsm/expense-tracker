@@ -1,4 +1,4 @@
-UpdateTransaction:
+GetAccountBalance:
     handler: src/lambda/http/getAccountBalance.handler
     events:
       - http:
