@@ -1,0 +1,232 @@
+{
+	"info": {
+		"_postman_id": "4d0a7dca-fde9-4cac-8372-7633f6c69389",
+		"name": "Expenses Tracker API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Transaction",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"The post returns a new item with an id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.item).to.not.eql(null);",
+							"    pm.expect(jsonData.item.transactionId).to.not.eql(null);",
+							"    pm.collectionVariables.set('transactionId', jsonData.item.transactionId)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\": \"Car washing\",\n\t\"amount\": -12.40\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transaction",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"account",
+						"transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Transaction",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"The post returns a updated item\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.item).to.not.eql(null);",
+							"    pm.expect(jsonData.item.description).to.eql(\"Supermarket\");",
+							"    pm.expect(jsonData.item.amount).to.eql(-13.4);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\": \"Supermarket\",\n\t\"amount\": -13.40\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transaction/{{transactionId}}",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"account",
+						"transaction",
+						"{{transactionId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Transaction",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"pm.test(\"The post returns a new item with an id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.be.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transaction/{{transactionId}}",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"account",
+						"transaction",
+						"{{transactionId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apiId",
+			"value": "yajy4f3wo1"
+		},
+		{
+			"key": "authToken",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlSWhIR0FaYzMxaHM1N1JoN3daTiJ9.eyJpc3MiOiJodHRwczovL3VkYS1wdnNtLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDExNzQ3NTgyOTc4NDUyMjg2NTIyNiIsImF1ZCI6ImxabXZwdWxadmtoS0dNbUd1MjVTdnFkU3JZTnlBb1JmIiwiaWF0IjoxNjEzNjg2NTgwLCJleHAiOjE2MTM3MjI1ODAsImF0X2hhc2giOiJteC1jMFIxQ3BNeW84WElDX3cxeEdnIiwibm9uY2UiOiJKaFQyeE16M0NJa0hIMkZSd3pleEV5M2dpNjlhLXQxUyJ9.GnCbN8I9-MtTk8dBlJ8JZRSQ-8rDmB3nUeqmRdNmQs0blC8L0erq5FsuTB9K34uq6RUX4VcC5bTID6jj81nCZGlwW9uQeFyb4qMxQIu5R2irea4shkH590yd3hoi5nXA5Z32T78ak5EA7ThOPk7B2jwEyPTcsYvY4EKS43Nb-EoCcB9OYQ5pGJcdIvSFwxLCu-yRgMWQb1c8Wq2dp-jrYqd3dYWC4sHdxxJ7mMno319s1ToR0XFu3NFTZqSrN6MwAN8PhFKgnwBgz3G8uhaXT7gZxCdOeeZgeEqPPppdTXCSmEANDzocU8I66jhMisEVp1IN3cGK6A-naaESX3iHGw"
+		},
+		{
+			"key": "transactionId",
+			"value": ""
+		}
+	]
+}
