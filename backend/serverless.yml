@@ -36,6 +36,7 @@ functions:
   - ${file(src/lambda/http/createTransaction.yml)}
   - ${file(src/lambda/http/deleteTransaction.yml)}
   - ${file(src/lambda/http/updateTransaction.yml)}
+  - ${file(src/lambda/http/getTransactions.yml)}
   - ${file(src/lambda/auth/auth0Authorizer.yml)}
 
 custom:

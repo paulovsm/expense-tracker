@@ -1,0 +1,25 @@
+GetTransactions:
+    handler: src/lambda/http/getTransactions.handler
+    events:
+      - http:
+          method: get
+          path: account/transactions
+          cors: true
+          authorizer: Auth
+          documentation:
+            summary: Get all Transactions
+            description: Get all Transactions
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTIONS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTIONS_TABLE}/index/${self:provider.environment.USERID_INDEX}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
