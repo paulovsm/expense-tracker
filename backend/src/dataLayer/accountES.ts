@@ -21,8 +21,8 @@ export default class AccountES {
         logger.info('Searching ElasticSearch ', {query: query} )
 
         const response = await es.search({
-            index: 'todos-index',
-            type: 'todo',
+            index: 'transactions-index',
+            type: 'transaction',
             q: query.toString()
         })
 

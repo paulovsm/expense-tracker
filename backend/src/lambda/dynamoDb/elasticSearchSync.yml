@@ -1,0 +1,6 @@
+SyncWithElasticsearch:
+  handler: src/lambda/dynamoDb/elasticSearchSync.handler
+  events:
+    - stream:
+        type: dynamodb
+        arn: !GetAtt TodosDynamoDBTable.StreamArn

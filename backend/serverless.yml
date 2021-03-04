@@ -6,6 +6,7 @@ plugins:
   - serverless-reqvalidator-plugin
   - serverless-aws-documentation
   - serverless-iam-roles-per-function
+  - serverless-es-logs
 
 # Uncomment to enable individual packaging
 package:
@@ -27,7 +28,7 @@ provider:
     USERID_INDEX: UserIdIndex
     IMAGES_S3_BUCKET: serverless-expense-tracker-images-pvsm-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    #ES_ENDPOINT: !GetAtt ImagesSearch.DomainEndpoint 
+    ES_ENDPOINT: !GetAtt ImagesSearch.DomainEndpoint 
 
   logs:
     restApi: true
@@ -38,6 +39,8 @@ functions:
   - ${file(src/lambda/http/updateTransaction.yml)}
   - ${file(src/lambda/http/getTransactions.yml)}
   - ${file(src/lambda/http/generateUploadUrl.yml)}
+  - ${file(src/lambda/http/searchTransactions.yml)}
+  - ${file(src/lambda/dynamoDb/elasticSearchSync.yml)}
   - ${file(src/lambda/auth/auth0Authorizer.yml)}
 
 custom:
@@ -54,6 +57,11 @@ custom:
       - name: TransactionUpdateRequest
         contentType: application/json
         schema: ${file(models/update-transaction-request.json)}
+  esLogs:
+    endpoint: !GetAtt ImagesSearch.DomainEndpoint
+    index: "logtrace-index"
+    includeApiGWLogs: true
+    indexDateSeparator: '-'
 
 resources:
   - ${file(src/requests/validator.yml)}
