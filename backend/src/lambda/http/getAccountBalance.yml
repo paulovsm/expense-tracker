@@ -1,5 +1,5 @@
 UpdateTransaction:
-    handler: src/lambda/http/accountBalance.handler
+    handler: src/lambda/http/getAccountBalance.handler
     events:
       - http:
           method: get
