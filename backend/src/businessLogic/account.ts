@@ -2,7 +2,7 @@ import 'source-map-support/register';
 import * as uuid from 'uuid';
 import { APIGatewayProxyEvent } from 'aws-lambda';
 import AccountAccess from '../dataLayer/accountAccess';
-import AccountES from '../dataLayer/accountES';
+//import AccountES from '../dataLayer/accountES';
 import AccountStorage from '../dataLayer/accountStorage';
 import { getUserId } from '../lambda/utils';
 import { CreateTransactionRequest } from '../requests/CreateTransactionRequest';
@@ -13,7 +13,7 @@ import { createLogger } from '../utils/logger'
 
 const accountAccess = new AccountAccess();
 const accountStorage = new AccountStorage();
-const accountES = new AccountES();
+//const accountES = new AccountES();
 const logger = createLogger('transactionsBusinessLogic')
 
 export async function createTransaction(event: APIGatewayProxyEvent, createTransactionRequest: CreateTransactionRequest): Promise<TransactionItem> {
@@ -117,22 +117,22 @@ export async function generateUploadUrl(event: APIGatewayProxyEvent): Promise<st
     return await accountStorage.getSignedUploadURL(createSignedUrlRequest);
 }
 
-export async function searchTransaction(event: APIGatewayProxyEvent) {
-    const queryString = event.queryStringParameters? event.queryStringParameters.q : "";
+// export async function searchTransaction(event: APIGatewayProxyEvent) {
+//     const queryString = event.queryStringParameters? event.queryStringParameters.q : "";
 
-    logger.info('Search Transaction', {queryString: queryString} )
+//     logger.info('Search Transaction', {queryString: queryString} )
 
-    const matchedItems: Array<any> = await accountES.search(queryString)
+//     const matchedItems: Array<any> = await accountES.search(queryString)
 
-    if (!matchedItems || matchedItems.length == 0) {
-        return []
-    }
+//     if (!matchedItems || matchedItems.length == 0) {
+//         return []
+//     }
 
-    var result = []
+//     var result = []
 
-    for (const item of matchedItems) {
-        result.push(await accountAccess.getTransactionFromDB(item.transactionId, item.userId))
-    }
+//     for (const item of matchedItems) {
+//         result.push(await accountAccess.getTransactionFromDB(item.transactionId, item.userId))
+//     }
 
-    return result;
-}
+//     return result;
+// }
