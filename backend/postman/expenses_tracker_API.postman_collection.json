@@ -207,7 +207,7 @@
 							"",
 							"pm.test(\"The count is equal to the number of items rx\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.items.count).to.eql(jsonData.items.rows.length);",
+							"    pm.expect(jsonData.items.length).to.gte(3);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -241,6 +241,61 @@
 						"dev",
 						"account",
 						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Attachment  URL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 202\", function () {",
+							"    pm.response.to.have.status(202);",
+							"});",
+							"",
+							"pm.test(\"The attachment url for transaction id was generated\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.uploadUrl).to.be.null;",
+							"    pm.expect(jsonData.uploadUrl).to.be.empty;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transaction/{{transactionId}}/attachment",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"account",
+						"transaction",
+						"{{transactionId}}",
+						"attachment"
 					]
 				}
 			},
