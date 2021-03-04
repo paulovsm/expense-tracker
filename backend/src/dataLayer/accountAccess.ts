@@ -10,7 +10,7 @@ const logger = createLogger('accountAccess')
 export default class AccountAccess {
   constructor(
       private readonly docClient: DocumentClient = new XAWS.DynamoDB.DocumentClient(),
-      private readonly transactionsTable = process.env.TODO_TABLE,
+      private readonly transactionsTable = process.env.TRANSACTIONS_TABLE,
       private readonly userIDIndexName = process.env.USERID_INDEX,
       private readonly accountStorage = process.env.IMAGES_S3_BUCKET
   ) {}
