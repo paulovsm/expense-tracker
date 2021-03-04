@@ -67,3 +67,4 @@ resources:
   - ${file(src/requests/validator.yml)}
   - ${file(src/dataLayer/dynamodb.yml)}
   - ${file(src/dataLayer/s3.yml)}
+  - ${file(src/dataLayer/elasticSearch.yml)}
