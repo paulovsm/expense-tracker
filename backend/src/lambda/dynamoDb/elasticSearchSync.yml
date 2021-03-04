@@ -3,4 +3,4 @@ SyncWithElasticsearch:
   events:
     - stream:
         type: dynamodb
-        arn: !GetAtt TodosDynamoDBTable.StreamArn
+        arn: !GetAtt TransactionsDynamoDBTable.StreamArn
