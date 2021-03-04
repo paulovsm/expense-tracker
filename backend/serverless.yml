@@ -10,7 +10,7 @@ plugins:
 
 # Uncomment to enable individual packaging
 package:
-  individually: true
+  individually: false
 
 provider:
   name: aws
