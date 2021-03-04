@@ -152,14 +152,14 @@ export async function getAccountBalance(event: APIGatewayProxyEvent) {
         .filter(item => item > 0)
         .reduce((acc, item) => (acc += item), 0);
 
-    const expense = (
-        amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1
-    );
+    const expense = amounts
+        .filter(item => item < 0)
+        .reduce((acc, item) => (acc += item), 0);
 
     const account = {
-        balance: balance,
-        income: income,
-        expense: expense
+        balance: balance.toFixed(2),
+        income: income.toFixed(2),
+        expense: expense.toFixed(2)
     }
 
     logger.info('Current account Balance', {userId: userId, account: account})
