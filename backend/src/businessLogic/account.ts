@@ -139,30 +139,43 @@ export async function searchTransaction(event: APIGatewayProxyEvent) {
 
 export async function getAccountBalance(event: APIGatewayProxyEvent) {
     const userId = getUserId(event);
+    var account: any = {}
 
     logger.info('Get account Balance', {userId: userId} )
 
-    const transactions = await accountAccess.getAllTransactionsFromDB(userId)
+    try {
 
-    const amounts = transactions.map(transaction => transaction.amount);
+        const transactions = await accountAccess.getAllTransactionsFromDB(userId)
 
-    const balance = amounts.reduce((acc, item) => (acc += item), 0);
+        const amounts = transactions.map(transaction => transaction.amount);
 
-    const income = amounts
-        .filter(item => item > 0)
-        .reduce((acc, item) => (acc += item), 0);
+        const balance = amounts.reduce((acc, item) => (acc += item), 0);
 
-    const expense = amounts
-        .filter(item => item < 0)
-        .reduce((acc, item) => (acc += item), 0);
+        const income = amounts
+            .filter(item => item > 0)
+            .reduce((acc, item) => (acc += item), 0);
 
-    const account = {
-        balance: balance.toFixed(2),
-        income: income.toFixed(2),
-        expense: expense.toFixed(2)
+        const expense = amounts
+            .filter(item => item < 0)
+            .reduce((acc, item) => (acc += item), 0);
+
+        account = {
+            balance: parseFloat(balance.toFixed(2)),
+            income: parseFloat(income.toFixed(2)),
+            expense: parseFloat(expense.toFixed(2))
+        }
+
+        logger.info('Current account Balance', {userId: userId, account: account})
+
+    } catch (error) {
+        logger.error('Error calculating account balance', {userId: userId, error: error})
+        account = {
+            balance: 0.00,
+            income: 0.00,
+            expense: 0.00
+        }
+
     }
-
-    logger.info('Current account Balance', {userId: userId, account: account})
 
     return account;
 }
