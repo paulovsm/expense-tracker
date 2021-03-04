@@ -19,7 +19,7 @@ deploy_service_job: &DEPLOY_SERVICE_JOB
   script:
     - cd ${SERVICE_PATH}
     - serverless deploy -v
-    - newman run postman/expenses_tracker_API.postman_collection.json
+    - newman run --delay-request 10000 postman/expenses_tracker_API.postman_collection.json
     - cd -
 
 jobs:
