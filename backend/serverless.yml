@@ -28,7 +28,7 @@ provider:
     USERID_INDEX: UserIdIndex
     IMAGES_S3_BUCKET: serverless-expense-tracker-images-pvsm-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    ES_ENDPOINT: !GetAtt ImagesSearch.DomainEndpoint 
+    ES_ENDPOINT: !GetAtt TransactionsSearch.DomainEndpoint 
 
   logs:
     restApi: true
@@ -59,7 +59,7 @@ custom:
         contentType: application/json
         schema: ${file(models/update-transaction-request.json)}
   esLogs:
-    endpoint: !GetAtt ImagesSearch.DomainEndpoint
+    endpoint: !GetAtt TransactionsSearch.DomainEndpoint
     index: "logtrace-index"
     includeApiGWLogs: true
     indexDateSeparator: '-'

@@ -1,9 +1,9 @@
 Resources:
-  ImagesSearch:
+  TransactionsSearch:
     Type: AWS::Elasticsearch::Domain
     Properties:
       ElasticsearchVersion: '6.3'
-      DomainName: images-search-${self:provider.stage}
+      DomainName: transactions-search-${self:provider.stage}
       ElasticsearchClusterConfig:
         DedicatedMasterEnabled: false
         InstanceCount: '1'
@@ -18,9 +18,8 @@ Resources:
       AccessPolicies:
         Version: '2012-10-17'
         Statement:
-          -
-            Effect: Allow
+          - Effect: Allow
             Principal:
               AWS: '*'
             Action: 'es:ESHttp*'
-            Resource: !Sub 'arn:aws:es:${self:provider.region}:${AWS::AccountId}:domain/images-search-${self:provider.stage}/*'
+            Resource: !Sub 'arn:aws:es:${self:provider.region}:${AWS::AccountId}:domain/transactions-search-${self:provider.stage}/*'
