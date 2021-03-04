@@ -40,6 +40,7 @@ functions:
   - ${file(src/lambda/http/getTransactions.yml)}
   - ${file(src/lambda/http/generateUploadUrl.yml)}
   - ${file(src/lambda/http/searchTransactions.yml)}
+  - ${file(src/lambda/http/getAccountBalance.yml)}
   - ${file(src/lambda/dynamoDb/elasticSearchSync.yml)}
   - ${file(src/lambda/auth/auth0Authorizer.yml)}
 

@@ -136,3 +136,33 @@ export async function searchTransaction(event: APIGatewayProxyEvent) {
 
     return result;
 }
+
+export async function getAccountBalance(event: APIGatewayProxyEvent) {
+    const userId = getUserId(event);
+
+    logger.info('Get account Balance', {userId: userId} )
+
+    const transactions = await accountAccess.getAllTransactionsFromDB(userId)
+
+    const amounts = transactions.map(transaction => transaction.amount);
+
+    const balance = amounts.reduce((acc, item) => (acc += item), 0);
+
+    const income = amounts
+        .filter(item => item > 0)
+        .reduce((acc, item) => (acc += item), 0);
+
+    const expense = (
+        amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1
+    );
+
+    const account = {
+        balance: balance,
+        income: income,
+        expense: expense
+    }
+
+    logger.info('Current account Balance', {userId: userId, account: account})
+
+    return account;
+}

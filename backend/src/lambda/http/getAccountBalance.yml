@@ -1,0 +1,27 @@
+UpdateTransaction:
+    handler: src/lambda/http/accountBalance.handler
+    events:
+      - http:
+          method: get
+          path: account
+          cors: true
+          authorizer: Auth
+          documentation:
+            summary: Get user's account balance
+            description: Get user's account balance
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTIONS_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TRANSACTIONS_TABLE}/index/${self:provider.environment.USERID_INDEX}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+          - xray:PutTelemetryRecords
+        Resource: "*"
