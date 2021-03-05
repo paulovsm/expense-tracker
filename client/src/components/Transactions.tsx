@@ -77,6 +77,10 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
     }
   }
 
+  addDefaultSrc = (event: React.ChangeEvent<HTMLImageElement>) => {
+    event.target.src = 'https://via.placeholder.com/295x295?text=Image+Not+Available'
+  }
+
   // onTransactionCheck = async (pos: number) => {
   //   try {
   //     const transaction = this.state.transactions[pos]
@@ -210,7 +214,7 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
                 </Button>
               </Grid.Column>
               {transaction.attachmentUrl && (
-                <Image src={transaction.attachmentUrl} size="small" wrapped />
+                <Image src={transaction.attachmentUrl} size="small" wrapped onError={this.addDefaultSrc} />
               )}
               <Grid.Column width={16}>
                 <Divider />

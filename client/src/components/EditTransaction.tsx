@@ -12,7 +12,7 @@ enum UploadState {
 interface EditTransactionProps {
   match: {
     params: {
-      todoId: string
+      transactionId: string
     }
   }
   auth: Auth
@@ -51,7 +51,7 @@ export class EditTransaction extends React.PureComponent<
       }
 
       this.setUploadState(UploadState.FetchingPresignedUrl)
-      const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.todoId)
+      const uploadUrl = await getUploadUrl(this.props.auth.getIdToken(), this.props.match.params.transactionId)
 
       this.setUploadState(UploadState.UploadingFile)
       await uploadFile(uploadUrl, this.state.file)
