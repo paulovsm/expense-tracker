@@ -4,19 +4,22 @@ import update from 'immutability-helper'
 import * as React from 'react'
 import {
   Button,
-  Checkbox,
   Divider,
   Grid,
   Header,
   Icon,
   Input,
   Image,
-  Loader
+  Loader,
+  GridColumn,
+  Label
 } from 'semantic-ui-react'
+import { threadId } from 'worker_threads'
 
 import { createTransaction, deleteTransaction, getTransactions, patchTransaction, getBalance, searchTransactions } from '../api/transactions-api'
 import Auth from '../auth/Auth'
 import { Transaction } from '../types/Transaction'
+import { Account } from '../types/Account'
 
 interface TransactionsProps {
   auth: Auth
@@ -25,17 +28,21 @@ interface TransactionsProps {
 
 interface TransactionsState {
   transactions: Transaction[]
+  account: Account
   newTransactionDescription: string
   newTransactionAmount: number
-  loadingTransactions: boolean
+  loadingTransactions: boolean,
+  searchTerm: string
 }
 
 export class Transactions extends React.PureComponent<TransactionsProps, TransactionsState> {
   state: TransactionsState = {
     transactions: [],
+    account: {} as Account,
     newTransactionDescription: '',
     newTransactionAmount: 0,
-    loadingTransactions: true
+    loadingTransactions: true,
+    searchTerm: ''
   }
 
   handleDecriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,31 +53,99 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
     this.setState({ newTransactionAmount: Number(event.target.value) })
   }
 
+  handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ searchTerm: event.target.value })
+  }
+
   onEditButtonClick = (transactionId: string) => {
     this.props.history.push(`/transactions/${transactionId}/edit`)
   }
 
-  onTransactionCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onTransactionCreate = async () => {
     try {
       const newTransaction = await createTransaction(this.props.auth.getIdToken(), {
         description: this.state.newTransactionDescription,
         amount: this.state.newTransactionAmount
       })
+
+      const newTransactions = [...this.state.transactions, newTransaction]
+
+      const amounts = newTransactions.map(transaction => transaction.amount)
+
+      const balance = parseFloat(amounts
+        .reduce((acc, item) => (acc += item), 0)
+        .toFixed(2));
+
+      const income = parseFloat(amounts
+        .filter(item => item > 0)
+        .reduce((acc, item) => (acc += item), 0)
+        .toFixed(2))
+
+        const expense = parseFloat(amounts
+          .filter(item => item < 0)
+          .reduce((acc, item) => (acc += item), 0)
+          .toFixed(2))
+
       this.setState({
-        transactions: [...this.state.transactions, newTransaction],
+        transactions: newTransactions,
         newTransactionDescription: '',
-        newTransactionAmount: 0
+        newTransactionAmount: 0,
+        account: {
+          balance: balance,
+          income: income,
+          expense: expense
+        }
       })
     } catch {
       alert('Transaction creation failed')
     }
   }
 
+  onTransactionSearch = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+    try {
+
+      const searchTerm = this.state.searchTerm
+
+      this.setState({
+        transactions: await searchTransactions(this.props.auth.getIdToken(), searchTerm)
+      })
+      
+    } catch (error) {
+      console.log("Error searching transactions", error)
+      alert('Transaction searching failed')
+    }
+  }
+
   onTransactionDelete = async (transactionId: string) => {
     try {
       await deleteTransaction(this.props.auth.getIdToken(), transactionId)
+      const deletedTransaction = this.state.transactions.filter(transaction => transaction.transactionId == transactionId)[0]
+
+      const newTransactions = this.state.transactions.filter(transaction => transaction.transactionId != transactionId)
+
+      const amounts = newTransactions.map(transaction => transaction.amount)
+
+      const balance = parseFloat(amounts
+        .reduce((acc, item) => (acc += item), 0)
+        .toFixed(2));
+
+      const income = parseFloat(amounts
+        .filter(item => item > 0)
+        .reduce((acc, item) => (acc += item), 0)
+        .toFixed(2))
+
+        const expense = parseFloat(amounts
+          .filter(item => item < 0)
+          .reduce((acc, item) => (acc += item), 0)
+          .toFixed(2))
+
       this.setState({
-        transactions: this.state.transactions.filter(transaction => transaction.transactionId != transactionId)
+        transactions: newTransactions,
+        account: {
+          balance: balance,
+          income: income,
+          expense: expense
+        }
       })
     } catch {
       alert('Transaction deletion failed')
@@ -101,8 +176,11 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
   async componentDidMount() {
     try {
       const transactions = await getTransactions(this.props.auth.getIdToken())
+      const account = await getBalance(this.props.auth.getIdToken())
+
       this.setState({
         transactions,
+        account,
         loadingTransactions: false
       })
     } catch (e) {
@@ -113,16 +191,40 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
   render() {
     return (
       <div>
-        <Header as="h1">Account Transactions</Header>
+        <Header as="h1">Expense Tracker</Header>
+
+        <Header as="h4" textAlign="center">Your Balance</Header>
+        <Header as="h1" textAlign="center">${this.state.account.balance}</Header>
+
+        {this.renderIncomeExpense()}
+
+        <Header as="h1">Add new transaction</Header>
 
         {this.renderCreateTransactionInput()}
+
+        <Header as="h1">Account Transactions</Header>
+        {this.renderSearchTransactionsInput()}
 
         {this.renderTransactions()}
       </div>
     )
   }
 
-  renderCreateTransactionInput() {
+  renderIncomeExpense() {
+    return (<div className="inc-exp-container">
+      <div>
+        <h4>Income</h4>
+        <p className="money plus">${this.state.account.income}</p>
+      </div>
+      <div>
+        <h4>Expense</h4>
+        <p className="money minus">${this.state.account.expense}</p>
+      </div>
+    </div>
+    )
+  }
+
+  renderSearchTransactionsInput() {
     return (
       <Grid.Row>
         <Grid.Column width={16}>
@@ -130,30 +232,57 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
             action={{
               color: 'teal',
               labelPosition: 'left',
-              icon: 'add',
-              content: 'New transaction',
-              onClick: this.onTransactionCreate
+              icon: 'search',
+              content: 'Search',
+              onClick: this.onTransactionSearch
             }}
             fluid
             actionPosition="left"
-            placeholder="Enter Transaction Description"
+            placeholder="Search transactions by key owner..."
+            onChange={this.handleSearchChange}
+          >
+          </Input>
+        </Grid.Column>
+        <Grid.Column width={16}>
+          <Divider />
+        </Grid.Column>
+      </Grid.Row>
+    )
+  }
+
+  renderCreateTransactionInput() {
+    return (
+      
+      <Grid.Row>
+        <Grid.Column width={8}>
+          <Label>Description</Label>
+          <Input
+            fluid
+            placeholder="Enter Description..."
             onChange={this.handleDecriptionChange}
           />
         </Grid.Column>
-        <Grid.Column width={16}>
+        <Grid.Column width={8}>
+        <Label>Amount (negative - expense, positive - income)</Label>
           <Input
-            action={{
-              color: 'teal',
-              labelPosition: 'left',
-              icon: 'add',
-              content: 'Transaction Amount',
-              onClick: this.onTransactionCreate
-            }}
             fluid
-            actionPosition="left"
-            placeholder="Enter Transaction Description"
+            placeholder="Enter Amount..."
             onChange={this.handleAmountChange}
-          />
+            type="number"
+          >
+            <Label basic>$</Label>
+            <input />
+            </Input>
+        </Grid.Column>  
+        <Grid.Column width={1}>
+          <Button
+            icon
+            color="teal"
+            onClick={() => this.onTransactionCreate()}
+          >
+            New Transaction
+            <Icon name="add" />
+          </Button>
         </Grid.Column>
         <Grid.Column width={16}>
           <Divider />
@@ -186,7 +315,7 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
         {this.state.transactions.map((transaction, pos) => {
           return (
             <Grid.Row key={transaction.transactionId}>
-              <Grid.Column width={10} verticalAlign="middle">
+              <Grid.Column width={8} verticalAlign="middle">
                 {transaction.description}
               </Grid.Column>
               <Grid.Column width={3} floated="right">

@@ -588,7 +588,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transactions/search?q=dog",
+					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transactions/search?q=car",
 					"protocol": "https",
 					"host": [
 						"{{apiId}}",
@@ -606,7 +606,7 @@
 					"query": [
 						{
 							"key": "q",
-							"value": "dog"
+							"value": "car"
 						}
 					]
 				}
@@ -630,8 +630,19 @@
 							"    pm.expect(jsonData.income).to.not.eql(null);",
 							"    pm.expect(jsonData.expense).to.not.eql(null);",
 							"",
-							"    pm.expect(jsonData.balance).to.be.gte(0);",
 							"    pm.expect(jsonData.income).to.be.gte(0);",
+							"    pm.expect(jsonData.expense).to.be.lte(0);",
+							"});",
+							"",
+							"pm.test(\"Income greater than 0\", function () {",
+							"    var jsonData = pm.response.json();",
+							"",
+							"    pm.expect(jsonData.income).to.be.gte(0);",
+							"});",
+							"",
+							"pm.test(\"Expense lesser than 0\", function () {",
+							"    var jsonData = pm.response.json();",
+							"",
 							"    pm.expect(jsonData.expense).to.be.lte(0);",
 							"});"
 						],

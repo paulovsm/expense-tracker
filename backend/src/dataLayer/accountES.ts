@@ -26,7 +26,9 @@ export default class AccountES {
             q: query.toString()
         })
 
-        const hits = response.hits.hits.map(i => i._source)
+        var hits = response.hits.hits.map(i => i._source)
+
+        hits = hits.filter(hit => hit != null)
 
         logger.info('ElasticSearch results', {hits: hits} )
 

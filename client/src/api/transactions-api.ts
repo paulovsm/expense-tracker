@@ -72,7 +72,7 @@ export async function getUploadUrl(
 export async function getBalance(
   idToken: string,
 ): Promise<Account> {
-  const response = await Axios.post(`${apiEndpoint}/account`, '', {
+  const response = await Axios.get(`${apiEndpoint}/account`, {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
