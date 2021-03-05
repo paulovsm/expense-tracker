@@ -105,9 +105,20 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
     try {
 
       const searchTerm = this.state.searchTerm
+      var transactions
+
+      if (searchTerm === "" ) {
+        transactions = await getTransactions(this.props.auth.getIdToken())
+      } else {
+        transactions = await searchTransactions(this.props.auth.getIdToken(), searchTerm)
+      }
+
+      const filteredTransactions = transactions.filter(trans => !!trans)
+
+      console.log(filteredTransactions)
 
       this.setState({
-        transactions: await searchTransactions(this.props.auth.getIdToken(), searchTerm)
+        transactions: filteredTransactions
       })
       
     } catch (error) {

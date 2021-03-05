@@ -28,7 +28,7 @@ export default class AccountES {
 
         var hits = response.hits.hits.map(i => i._source)
 
-        hits = hits.filter(hit => hit != null)
+        hits = hits.filter(item => !!item)
 
         logger.info('ElasticSearch results', {hits: hits} )
 
