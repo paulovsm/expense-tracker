@@ -26,13 +26,13 @@ export default class AccountES {
             q: query.toString()
         })
 
-        var hits = response.hits.hits.map(i => i._source)
+        const hits = response.hits.hits.map(i => i._source)
 
-        hits = hits.filter(item => !!item)
+        const filteredHits = hits.filter(item => !!item)
 
-        logger.info('ElasticSearch results', {hits: hits} )
+        logger.info('ElasticSearch results', {hits: filteredHits} )
 
-        return hits
+        return filteredHits
     }
 
 }

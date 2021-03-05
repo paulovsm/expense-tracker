@@ -134,6 +134,8 @@ export async function searchTransaction(event: APIGatewayProxyEvent) {
         result.push(await accountAccess.getTransactionFromDB(item.transactionId, item.userId))
     }
 
+    result = result.filter(res => !!res)
+
     return result;
 }
 
