@@ -1,6 +1,6 @@
 import * as React from 'react'
 import Auth from '../auth/Auth'
-import { getUploadUrl, uploadFile, patchTransaction } from '../api/transactions-api'
+import { getUploadUrl, uploadFile, patchTransaction, getTransaction } from '../api/transactions-api'
 import {
   Button,
   Divider,
@@ -34,7 +34,7 @@ interface EditTransactionState {
   file: any
   uploadState: UploadState,
   newTransactionDescription: string,
-    newTransactionAmount: number,
+  newTransactionAmount: number,
 }
 
 export class EditTransaction extends React.PureComponent<
@@ -111,6 +111,20 @@ export class EditTransaction extends React.PureComponent<
       alert('Transaction update failed')
     }
   }
+  
+  async componentDidMount() {
+    try {
+      const transaction = await getTransaction(this.props.auth.getIdToken(), this.props.match.params.transactionId)
+      console.log(transaction)
+
+      this.setState({
+        newTransactionDescription: transaction.description,
+        newTransactionAmount: transaction.amount
+      })
+    } catch (e) {
+      alert(`Failed to fetch todos: ${e.message}`)
+    }
+  }
 
   render() {
     return (
@@ -148,6 +162,7 @@ export class EditTransaction extends React.PureComponent<
             fluid
             placeholder="Enter Description..."
             onChange={this.handleDecriptionChange}
+            value={this.state.newTransactionDescription}
           />
         </Grid.Column>
         <Grid.Column width={8}>
@@ -157,6 +172,7 @@ export class EditTransaction extends React.PureComponent<
             placeholder="Enter Amount..."
             onChange={this.handleAmountChange}
             type="number"
+            value={this.state.newTransactionAmount}
           >
             <Label basic>$</Label>
             <input />

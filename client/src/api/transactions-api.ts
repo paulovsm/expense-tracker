@@ -31,6 +31,20 @@ export async function createTransaction(
   return response.data.item
 }
 
+export async function getTransaction(
+  idToken: string,
+  transactionId: string,
+): Promise<Transaction> {
+  const response = await Axios.get(`${apiEndpoint}/account/transaction/${transactionId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${idToken}`
+    }
+  })
+
+  return response.data.item
+}
+
 export async function patchTransaction(
   idToken: string,
   transactionId: string,
