@@ -54,6 +54,26 @@ It should return data that looks like this:
 }
 ```
 
+* `GetTransaction` - should return a single existing transaction by ID. The transaction id that should be updated is passed as a URL parameter.
+
+It should return data that looks like this:
+
+```json
+{
+  "item": 
+    {
+      "transactionId": "123",
+      "userId": "123",
+      "createdAt": "2019-07-27T20:01:45.424Z",
+      "modifiedAt": "2019-07-27T20:01:45.424Z",
+      "descrition": "Energy bill",
+      "amount": -50.00,
+      "type": "Expense",
+      "attachmentUrl": "http://example.com/image.png"
+    }
+}
+```
+
 * `CreateTransaction` - should create a new transaction for a current user. The format of data send by a client application to this function can be found in the `CreateTransactionRequest.ts` file
 
 It receives a new transaction to be created in JSON format that looks like this:
@@ -196,6 +216,16 @@ Implemented using asymmetrically encrypted Auth0 JWT tokens.
 
 Logs are created using [Winston](https://github.com/winstonjs/winston) logger which creates [JSON formatted](https://stackify.com/what-is-structured-logging-and-why-developers-need-it/) log statements. All logs are streamed to ElasticSearch in order to be queried using Kibana.
 
+![Alt text](images/Kibana.png?raw=true "Logging Kibana")
+
+## CI/CD
+
+CI/CD pipeline implemented with TravisCI. Changes to the master branch trigger the Serverless build and deploy to AWS process.
+
+![Alt text](images/TravisCI.png?raw=true "CI/CD TravisCI")
+
+Integration tests were implemented using Postman (Newman package) in order to garantee that all integration are working after each new deploy.
+![Alt text](images/Postman.png?raw=true "CI/CD Postman")
 
 # How to run the application
 
