@@ -248,7 +248,6 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
               onClick: this.onTransactionSearch
             }}
             fluid
-            actionPosition="left"
             placeholder="Search transactions by key owner..."
             onChange={this.handleSearchChange}
           >
@@ -354,7 +353,12 @@ export class Transactions extends React.PureComponent<TransactionsProps, Transac
                 </Button>
               </Grid.Column>
               {transaction.attachmentUrl && (
-                <Image src={transaction.attachmentUrl} size="small" wrapped onError={this.addDefaultSrc} />
+                <Image src={transaction.attachmentUrl} size="tiny" wrapped 
+                  onError={this.addDefaultSrc} 
+                  as="a"
+                  href={transaction.attachmentUrl}
+                  target="_blank"
+                />
               )}
               <Grid.Column width={16}>
                 <Divider />

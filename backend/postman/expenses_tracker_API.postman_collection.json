@@ -42,7 +42,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"description\": \"Car washing\",\n\t\"amount\": -12.40\n}",
+					"raw": "{\n\t\"description\": \"School Books 2\",\n\t\"amount\": -115.40\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -588,7 +588,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transactions/search?q=car",
+					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transactions/search?q=school",
 					"protocol": "https",
 					"host": [
 						"{{apiId}}",
@@ -606,7 +606,7 @@
 					"query": [
 						{
 							"key": "q",
-							"value": "car"
+							"value": "school"
 						}
 					]
 				}
@@ -680,6 +680,61 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Transaction",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"The request return a existing item\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.item).to.not.eql(null);",
+							"    pm.expect(jsonData.item.description).to.not.eql(null);",
+							"    pm.expect(jsonData.item.amount).to.not.eql(null);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{apiId}}.execute-api.us-east-1.amazonaws.com/dev/account/transaction/{{transactionId}}",
+					"protocol": "https",
+					"host": [
+						"{{apiId}}",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"account",
+						"transaction",
+						"{{transactionId}}"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -709,7 +764,7 @@
 		},
 		{
 			"key": "authToken",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlSWhIR0FaYzMxaHM1N1JoN3daTiJ9.eyJpc3MiOiJodHRwczovL3VkYS1wdnNtLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDExNzQ3NTgyOTc4NDUyMjg2NTIyNiIsImF1ZCI6InFTaThXdlJndmpCSjI0eVhyR21hYm14Rno0Nks1RzM2IiwiaWF0IjoxNjE0OTY4MzkyLCJleHAiOjE2MTUwMDQzOTIsImF0X2hhc2giOiJaaVIxVFVEZEhTYlRtbHVINFRuc0ZnIiwibm9uY2UiOiJmaERTLU9KZ0FVR1VReVV1czJGTjc0ZGwtTzFQMk1EfiJ9.HKLwLLU7zsRNk2sgE9kD-nB6ot14tCeZAplERIv0cvDbJuCvrlgGordfI7dr-fRanLb-Cq0XbQNV9ugYhav430U9UFmP_KCn8My_hIOLZF8baKmjvOEdcEOvSK_gIwXjkLSZVEpIOq61ZzJ1RkvLZRft7d7Ur3jziiSR5cuJLG8Pdouq2icvlHCX4WgbbkL0A1OiBRdHrr9oUkEoxyBtXG2rZoUIXD4_TgcWom_KeNnbKHluycqeiYpJTXcpx1LNtJkD5GafhqEZeVE6-OUWM9rRiTfQUE2zFPdxzV-8rjyC8QLSSTeTbYr455OFw20ORcFEAcVqhQkYMekxnCnLXw"
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFlSWhIR0FaYzMxaHM1N1JoN3daTiJ9.eyJpc3MiOiJodHRwczovL3VkYS1wdnNtLnVzLmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDExNzQ3NTgyOTc4NDUyMjg2NTIyNiIsImF1ZCI6InFTaThXdlJndmpCSjI0eVhyR21hYm14Rno0Nks1RzM2IiwiaWF0IjoxNjE1MjA4NTE5LCJleHAiOjE2MTUyNDQ1MTksImF0X2hhc2giOiI0ekVOS2MzNzQtOF9YTDBqNmFUSUlnIiwibm9uY2UiOiJNSE5NSkRNQ0RERENKc3F1NHB3emVZYWRLZTRoRWpjdyJ9.Lm1OSqvBfxKOzFGCU7x-TzV4cXfY9VEEL5RTFBQ4PIq6F80D2FJnCuPxPCh1BaI2SQ3RzsuX9P0IFwMbXqLQye20EvG_d1f3-rApc7BKJmo6MJpf9pqLfx0rEGk9X_o54yAuBpaAvBpsL6uRDjRFnNjQ4aJDA1r1mKSbJ7qurBLUcQ4eAIdn5qpjHnXmPkgc3xlIcnVHg9GtRggXj86i0-HdkqlNWIPlybX3Anjme_uZds5jTflKBAPk7d4d5v1vkg38376sp1DJ7KF-qMDSsZwyfH0EydASKhKai2pAPDltWEgkT9Eq7KsOam3ItHosM0u9wIOL09O1PSb94qry7A"
 		},
 		{
 			"key": "transactionId",

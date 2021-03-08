@@ -1,7 +1,19 @@
 import * as React from 'react'
-import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
-import { getUploadUrl, uploadFile } from '../api/transactions-api'
+import { getUploadUrl, uploadFile, patchTransaction } from '../api/transactions-api'
+import {
+  Button,
+  Divider,
+  Grid,
+  Header,
+  Icon,
+  Input,
+  Image,
+  Loader,
+  GridColumn,
+  Label,
+  Form
+} from 'semantic-ui-react'
 
 enum UploadState {
   NoUpload,
@@ -20,7 +32,9 @@ interface EditTransactionProps {
 
 interface EditTransactionState {
   file: any
-  uploadState: UploadState
+  uploadState: UploadState,
+  newTransactionDescription: string,
+    newTransactionAmount: number,
 }
 
 export class EditTransaction extends React.PureComponent<
@@ -29,7 +43,9 @@ export class EditTransaction extends React.PureComponent<
 > {
   state: EditTransactionState = {
     file: undefined,
-    uploadState: UploadState.NoUpload
+    uploadState: UploadState.NoUpload,
+    newTransactionDescription: '',
+    newTransactionAmount: 0,
   }
 
   handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +55,14 @@ export class EditTransaction extends React.PureComponent<
     this.setState({
       file: files[0]
     })
+  }
+
+  handleDecriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newTransactionDescription: event.target.value })
+  }
+
+  handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newTransactionAmount: Number(event.target.value) })
   }
 
   handleSubmit = async (event: React.SyntheticEvent) => {
@@ -70,10 +94,32 @@ export class EditTransaction extends React.PureComponent<
     })
   }
 
+  onTransactionUpdate = async () => {
+    try {
+      const newTransaction = await patchTransaction(this.props.auth.getIdToken(), this.props.match.params.transactionId, {
+        description: this.state.newTransactionDescription,
+        amount: this.state.newTransactionAmount
+      })
+
+      this.setState({
+        newTransactionDescription: '',
+        newTransactionAmount: 0,
+      })
+
+      alert('Transaction was updated!')
+    } catch {
+      alert('Transaction update failed')
+    }
+  }
+
   render() {
     return (
       <div>
-        <h1>Upload new image</h1>
+        <Header as="h1">Update transaction</Header>
+
+        {this.renderUpdateTransactionInput()}
+
+        <h1>Upload transaction receipt</h1>
 
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>
@@ -89,6 +135,47 @@ export class EditTransaction extends React.PureComponent<
           {this.renderButton()}
         </Form>
       </div>
+    )
+  }
+
+  renderUpdateTransactionInput() {
+    return (
+      
+      <Grid.Row>
+        <Grid.Column width={8}>
+          <Label>Description</Label>
+          <Input
+            fluid
+            placeholder="Enter Description..."
+            onChange={this.handleDecriptionChange}
+          />
+        </Grid.Column>
+        <Grid.Column width={8}>
+        <Label>Amount (negative - expense, positive - income)</Label>
+          <Input
+            fluid
+            placeholder="Enter Amount..."
+            onChange={this.handleAmountChange}
+            type="number"
+          >
+            <Label basic>$</Label>
+            <input />
+            </Input>
+        </Grid.Column>  
+        <Grid.Column width={1}>
+          <Button
+            icon
+            color="teal"
+            onClick={() => this.onTransactionUpdate()}
+          >
+            Update
+            <Icon name="save" />
+          </Button>
+        </Grid.Column>
+        <Grid.Column width={16}>
+          <Divider />
+        </Grid.Column>
+      </Grid.Row>
     )
   }
 
